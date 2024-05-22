@@ -125,11 +125,11 @@ def label_comma(x, digits=0):
 def date_to_days(date):
     return (date - start_d).days
 
-def plot_nine(qual, metric1, metric2, quality=False, log=True):
-  
+def p9(qual, metric1, metric2, quality, log):
+
   plt.close('all')
   
-  p9 = (
+  p = (
     ggplot()
   
     # Historic ----------------------------------------------------------------
@@ -156,19 +156,18 @@ def plot_nine(qual, metric1, metric2, quality=False, log=True):
   )
   
   if log == True:
-    p9 = p9 + scale_y_log10(breaks=log_breaks,
+    p = p + scale_y_log10(breaks=log_breaks,
                             limits=log_limits,
                             labels=label_comma)
   else:
-    p9 = p9 + scale_y_continuous(labels = label_comma)
+    p = p + scale_y_continuous(labels = label_comma)
 
-  return p9
+  return p
 
-def sec_x_axis():
-  
-  plt.close('all')
-  plt.get_fignums()
-  
+def plot_nine(qual, metric1, metric2, quality=False, log=False):
+
+  # plotnine.ggplot
+  p9(qual, metric1, metric2, quality, log).show()
   
   # matplotlib.pyplot
   plt.plot([], [])
@@ -178,71 +177,46 @@ def sec_x_axis():
 
   # overlay secondary axis on plotnine plot
   sec = ax.twiny()
-  sec.set_xlim(ax.get_xlim())
-  sec.set_ylim(ax.get_ylim())
+  sec.set_xlim(ax.get_xlim());
+  sec.set_ylim(ax.get_ylim());
   
-  
-  
-  start_date=qual['date'].iloc[0]
-  end_date=qual['date'].iloc[-1]
-  years = pd.date_range(start=start_date, end=end_date, freq='YS')  # Year start dates
-  tick_locations = years
-  tick_labels = [int((date - start_date).days) for date in tick_locations]
-  
-  #tick_locations = qual['date']
-  #tick_labels = qual['days_since_ref'].iloc[:len(qual['date'])]
+  # Historic/Forecast start
+  start_date = qual['date'].iloc[0]
+  tick_locations = [start_date]
+  tick_labels = [0]  # Days since reference for start_date
 
-  sec.set_xticks(tick_locations)
-  sec.set_xticklabels(tick_labels)
-
-
-  # Display the plot
-  plt.show()
-
-
-
+  # Add tick locations for January 1st of subsequent years
+  for year in range(2010, 2020):
+    january_1st = datetime(year, 1, 1, tzinfo=timezone.utc)
+    tick_locations.append(january_1st)
+    tick_labels.append((january_1st - start_date).days)
   
-  
-  
-  
-  # qual.plot('date' - datetime.fromisoformat('date').dt.days.astype(int), ax=sec)
+  # Set ticks and labels
+  sec.set_xticks(ticks=tick_locations, labels=tick_labels)
 
-  #reference_date = qual['date'].min()
-  #qual['days_since_ref'] = (qual['date'] - reference_date).dt.days
-  #sec.plot(qual['days_since_ref'])
-  #plt.show()
-  # def format_date(x, pos):
-  #   return (reference_date + pd.DateOffset(days=int(x))).strftime('%Y-%m-%d')
-  #sec.xaxis.set_major_formatter(plt.FuncFormatter(format_date))
-  
-  plt.show()
-
-  
-  # remove the borders
+  # Hide spines
   sec.spines['top'].set_visible(False)
   sec.spines['right'].set_visible(False)
   sec.spines['bottom'].set_visible(False)
   sec.spines['left'].set_visible(False)
 
-  # hide minor ticks
+  # Hide x minor ticks
   ax.tick_params(axis='x', which='minor', color='white')
   
-  sec.xaxis_date(tz = timezone.utc)
-  
   plt.show()
-
+  
 #==============================================================================
-#================================= plotnine ===================================
+#=========================== plotnine plots ===================================
 #==============================================================================
-
 
 # Historical rate time decline curve with forecasted production of a gas well.
+
 plot_nine(qual, 'rate', 'rate_hat', log=False)
-sec_x_axis()
 
 
 
-plot_nine(qual, 'rate', 'rate_hat', log=True).show()
+
+plot_nine(qual, 'rate', 'rate_hat', log=True)
 
 plot_nine(qual, 'cum', 'cum_hat_fit', log=False).show()
 plot_nine(qual, 'cum', 'cum_hat_fit', log=True).show()
