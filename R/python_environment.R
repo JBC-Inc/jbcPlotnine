@@ -31,12 +31,9 @@ reticulate::repl_python()
 
 
 
-
-qual <- readr::read_csv("./inst/data/qual.csv")
-
-library(tidyverse)
-glimpse(qual)
-
+# qual <- readr::read_csv("./inst/data/qual.csv")
+# library(tidyverse)
+# glimpse(qual)
 # qual$Historic <- ""
 # qual$Forecast <- ""
 # glimpse(qual)
