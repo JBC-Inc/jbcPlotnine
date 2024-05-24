@@ -1,22 +1,97 @@
 from plotnine import *
+import re
 
-# SCALES ======================================================================
+# Utils.R =====================================================================
 
-def standardise_aes_names(x):
-  import re
-  # convert US to UK spelling of colour
-  x = x.replace("color", "colour")
+isTRUE <- function (x) {
+  is.logical(x) && length(x) == 1L && !is.na(x) && x
+}
 
-  # convert old-style aesthetics names to ggplot version
-  base_to_ggplot = {
-      # Add the appropriate mappings here
-      # Example: 'old_name': 'new_name'
-  }
-  x = base_to_ggplot.get(x, x)
-  return x
+isFALSE <- function (x) {
+  is.logical(x) && length(x) == 1L && !is.na(x) && !x
+}
 
-def new_scale(new_aes):
-  return standardise_aes_names(new_aes)
+# ggnewscale.R ================================================================
+#
+# Adds a new scale to the plot.
+#
+# Creates a new scale "slot". Geoms added to a plot after this function will
+# use a new scale definition. 
+#
+# @param new_aes A string with the name of the aesthetic for which a new scale
+#        will be created. 
+#
+# new_scale("color"): 
+#   new_scale_color()
+#   new_scale_colour()
+#   new_scale_fill()
+#
+# 
+#
+#
+#
+#
+#
+
+
+# NEW SCALE ===================================================================
+#
+# structure returns the given object with further attributes set. 
+# in this case we are adding the class "new_aes" to 
+# ggplot2::standardise_aes_names() function. 
+#
+# ggplot2::standardise_aes_names("color")
+# [1] "colour"
+#
+# structure(ggplot2::standardise_aes_names("color"), class="new_aes")
+# [1] "colour"
+# attr(,"class")
+# [1] "new_aes"
+#
+# new_scale <- function(new_aes) {
+#  structure(ggplot2::standardise_aes_names(new_aes), class = "new_aes")
+# }
+#
+# ggplot2:standardise_aes_names does not exist in plotnine
+# 
+# def add_attribute(obj, attrib, attrib_name):
+#   
+#   print("here2")
+#   
+#   print(obj)
+#   print(attrib)
+#   print(attrib_name)
+#   
+#   setattr(obj, attrib, attrib_name)
+#   return obj
+# 
+# def new_scale(new_aes):
+#   
+#   print(new_aes)
+#   
+#   return add_attribute(standardise_aes_names(new_aes), "class", "new_aes")
+# 
+# 
+# def standardise_aes_names(x):
+#   
+#   print("here")
+#   
+#   # Convert US to UK spelling of color
+#   x = re.sub("color", "colour", x)
+#     
+#   # Convert old-style aesthetics names to ggplot version
+#   base_to_ggplot = {
+#       "size": "size",
+#       "linetype": "linetype",
+#       "colour": "color",  # Reverse for demonstration, as the original is UK to US
+#       # Add more mappings as needed
+#   }
+#   for old_name, ggplot_name in base_to_ggplot.items():
+#       x = re.sub(old_name, ggplot_name, x)
+# 
+#   return x
+
+
 
 def new_scale_fill():
   return new_scale("fill")

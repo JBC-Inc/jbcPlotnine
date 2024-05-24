@@ -1,25 +1,3 @@
-#import subprocess
-#print(subprocess.run(['pip', 'list'], capture_output=True, text=True).stdout)
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
-import itertools
-import numpy as np
-
-import pandas as pd
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 1000)
-
-from plotnine import *
-from plotnine.facets import facet_grid
-from plotnine.themes import *
-from plotnine.data import *
-
-from datetime import datetime, timezone
-
-# import warnings
-# warnings.filterwarnings("ignore")
-
 #=================== 2024 PLOTNINE CONTEST - POSIT ============================
 # Rules:
 # 
@@ -32,18 +10,50 @@ from datetime import datetime, timezone
 #  4.Aesthetically pleasing
 #
 #==============================================================================
+#import subprocess
+#print(subprocess.run(['pip', 'list'], capture_output=True, text=True).stdout)
 
-qual = pd.read_csv('./inst/data/qual.csv', 
-                   keep_default_na=False, 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import itertools
+
+import numpy as np
+import pandas as pd
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 1000)
+
+from datetime import datetime, timezone
+
+from plotnine import *
+from plotnine.data import *
+from plotnine.facets import *
+from plotnine.themes import *
+
+# import warnings
+# warnings.filterwarnings("ignore")
+
+# Globals/data ================================================================
+
+qual = pd.read_csv('./inst/data/qual.csv',
+                   keep_default_na=False,
                    na_values=[' '],
                    parse_dates=['date'],
                    dtype={'region': 'string', 
                           'Historic': 'string', 
                           'Forecast': 'string'})
-clr = 'firebrick'
+                          
+fr = pd.read_csv('./inst/data/fill_region.csv',
+                 parse_dates=['start', 'end'],
+                 dtype={'region': 'category',
+                        'color': 'category'})
 
-fcst_hs = datetime(2009, 4, 1, tzinfo=timezone.utc)   # Forecast Historic Start April 1, 2009
-hist_he = datetime(2019, 6, 1, tzinfo=timezone.utc)   # Historic Historic End    June 1, 2019
+# Forecast Historic Start April 1, 2009
+fcst_hs = datetime(2009, 4, 1, tzinfo=timezone.utc)
+
+# Historic Historic End    June 1, 2019
+hist_he = datetime(2019, 6, 1, tzinfo=timezone.utc)
+
+# Functions ===================================================================
 
 def log_breaks(x):
     """
@@ -131,24 +141,51 @@ def p9(qual, metric1, metric2, quality, log):
       Side effect is to draw a plotnine object to the `Plots` pane in R Studio.
     """
     plt.close('all')
+    
+    if metric1 == 'rate':
+        ylab="Rate MCF/D"
+    elif metric1 == 'cum':
+        ylab="Cumulative Volume CF"
   
     p = (
-      ggplot()
+      ggplot(qual)
   
       # Historic --------------------------------------------------------------
-    
-      + geom_point(data=qual,
-                   mapping=aes('date', metric1, shape='Historic'), 
+
+      + geom_point(mapping=aes('date', metric1, shape='Historic'),
                    color='firebrick',
-                   fill='None',
+                   alpha=0.57,
+                   #fill='None',
                    size=2.4,
                    stroke=0.42)
                    
+      + scale_shape_manual(labels=['Gas'], values=['o'])
+
       # Forecast --------------------------------------------------------------
-    
+
       + geom_line(data=qual,
-                  mapping=aes('date', metric2, group='Forecast', color='Forecast'))
-                
+                  mapping=aes('date', metric2, color='Forecast'), alpha=0.77)
+                  
+      + scale_color_manual(labels=['Model'], values=['firebrick'])
+               
+      # Segments --------------------------------------------------------------
+      
+      # Forecast Start
+      + geom_vline(xintercept=[fcst_hs, hist_he], linetype='dashed', alpha=0.5)
+      # Historic Start
+      # + geom_vline(xintercept=hist_he, alpha=0.5, color='red')
+      
+      # Shaded fit/predict
+      + geom_rect(data=fr, 
+                  mapping=aes(xmin='start', xmax='end', fill='color'), 
+                  ymin=float('-inf'), 
+                  ymax=float('inf'))
+                  
+      + scale_fill_manual(
+          name="Regions",
+          labels=['Gap', 'Fit', 'Predict', 'Forecast'],
+          values=['#4300642a', '#43ff642a', '#ffff642a', '#4300642a'])
+
       # Scales, Themes, Labels ------------------------------------------------
 
       + scale_x_datetime(date_breaks='1 year', 
@@ -156,12 +193,22 @@ def p9(qual, metric1, metric2, quality, log):
                               limits=[fcst_hs - pd.DateOffset(months=6), 
                                       hist_he + pd.DateOffset(months=6)],
                               expand=(0, 0))
-    
-      + theme(plot_margin_top=0.05)
-    
-      + labs(x='', y='')
-    )
-  
+
+      + labs(x='', y=ylab, 
+        title='HELLOWORLD__________HELLOWORLD__________HELLOWORLD__________HELLOWORLD')
+
+      + theme(panel_grid_major_y=element_line(size=0.77, color='white'),
+              panel_grid_minor_y=element_line(size=0.42, color='white'),
+              # axis_ticks_length_minor=50
+              
+              panel_background=element_rect(fill='#01010111'), 
+              
+              plot_margin_top=0.042,
+              plot_margin_bottom=0.042,
+              
+              plot_title=element_text(hjust=0.9, margin={'b': 30})
+              )
+    )   
     # Log Scale ---------------------------------------------------------------
   
     if log == True:
@@ -169,8 +216,8 @@ def p9(qual, metric1, metric2, quality, log):
                             limits=log_limits,
                             labels=label_comma)
     else:
-      p = p + scale_y_continuous(labels = label_comma)
-      
+      p = p + scale_y_continuous(labels =label_comma)
+
     return p
 
 def plot_nine(qual, metric1, metric2, quality=False, log=False):
@@ -195,6 +242,9 @@ def plot_nine(qual, metric1, metric2, quality=False, log=False):
   # Secondary Axis hack -------------------------------------------------------
   # matplotlib.pyplot
   plt.plot([], [])
+  
+  #look and feel of 2nd axis 
+  # plt.rcParams.update({'font.size': 10, 'font.weight': 'normal', 'font.family': 'Fira Code'})
 
   # new axis 
   ax = plt.gca()
@@ -229,12 +279,22 @@ def plot_nine(qual, metric1, metric2, quality=False, log=False):
   plt.show()
   
 #==============================================================================
-#=========================== plotnine plots ===================================
-#==============================================================================
+#=========================== plotnine plots ====================================t
+
+# default plotnine
+theme_set(theme_gray())
+
+theme_set(theme_classic(base_size=12, base_family='Fira Code'))
+theme_set(theme_seaborn   (style='darkgrid', context='paper',    font='Fira Code', font_scale=1.42))
+# theme_set(theme_matplotlib()) # Default matplotlib - has minor log ticks but no 
+theme_set(theme_minimal   (base_size=12, base_family='Fira Code')) # Minimalistic no background annotations
+
+theme_set(theme_seaborn   (style='darkgrid', context='notebook', font='Fira Code', font_scale=1))
 
 # Historical rate time decline curve with forecasted production of a gas well.
 
-# Rate Time decline curve
+theme_set(theme_seaborn   (style='darkgrid', context='notebook', font='MS Gothic', font_scale=1))
+
 plot_nine(qual, 'rate', 'rate_hat', log=False)
 plot_nine(qual, 'rate', 'rate_hat', log=True)
 
@@ -320,50 +380,85 @@ plot_nine(qual, 'cum', 'cum_hat_pred', log=True)
 #
 # to test whether there is currently an Figure on the pyplot figure stack, check whether 
 #     .pyplot.get_fignums() is empty
+# 
+# plt.cla()             # clear the current axes
+# plt.clf()             # clear the current figure
+# plt.close()           # close a figure window
+# 
+# plt.get_fignums()
+# fig.axes
+# 
 
-plt.cla()             # clear the current axes
-plt.clf()             # clear the current figure
-plt.close()           # close a figure window
 
-plt.get_fignums()
-fig.axes
-
-
-
-# SUBPLOT ====================================================
-
-plt.close('all')
- 
-plt.subplot(221)
-plt.show()
-
-# equivalent but more general
-ax1 = plt.subplot(2, 2, 1)
-plt.show()
-
-# add a subplot with no frame
-ax2 = plt.subplot(222, frameon=False)
-plt.show()
-
-# add a polar subplot
-plt.subplot(223, projection='polar')
-plt.show()
-
-# add a red subplot that shares the x-axis with ax1
-plt.subplot(224, sharex=ax1, facecolor='red')
-plt.show()
-
-# delete ax2 from the figure
-plt.delaxes(ax2)
-plt.show()
-
-# add ax2 to the figure again
-# plt.subplot(ax2)
+# # SUBPLOT ====================================================
+# 
+# plt.close('all')
+#  
+# plt.subplot(221)
+# plt.show()
+# 
+# # equivalent but more general
+# ax1 = plt.subplot(2, 2, 1)
+# plt.show()
+# 
+# # add a subplot with no frame
+# ax2 = plt.subplot(222, frameon=False)
+# plt.show()
+# 
+# # add a polar subplot
+# plt.subplot(223, projection='polar')
+# plt.show()
+# 
+# # add a red subplot that shares the x-axis with ax1
+# plt.subplot(224, sharex=ax1, facecolor='red')
+# plt.show()
+# 
+# # delete ax2 from the figure
+# plt.delaxes(ax2)
+# plt.show()
+# 
+# # add ax2 to the figure again
+# # plt.subplot(ax2)
+# # plt.show()
+# 
+# # make the first Axes "current" again
+# plt.subplot(221)
 # plt.show()
 
-# make the first Axes "current" again
-plt.subplot(221)
-plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -39,3 +39,50 @@ reticulate::repl_python()
 # glimpse(qual)
 # qual <- qual |> select(-c(Historic, Forecast))
 # readr::write_csv(qual, "./inst/data/qual.csv")
+
+
+# fr = pd.read_csv('./inst/data/rf.csv',
+#                  parse_dates=['start', 'end'],
+#                  dtype={'region': 'category'})
+# fr['color'] = pd.Categorical([1, 2, 3, 4])
+
+
+# fr <- readr::read_csv('./inst/data/rf.csv')
+# fr
+#
+# fr <- fr |> dplyr::mutate(color = as.factor(c(1, 2, 3, 4)))
+# fr <- fr |> dplyr::mutate(region = as.factor(region))
+# fr <- fr |> dplyr::select(-color)
+# fr
+# readr::write_csv(fr, "./inst/data/fill_region.csv")
+#
+# fr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
