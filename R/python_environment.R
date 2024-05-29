@@ -102,23 +102,5 @@ reticulate::repl_python()
 #
 # p1
 # p2
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

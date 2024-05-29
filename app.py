@@ -285,8 +285,7 @@ app_ui = ui.page_navbar(
       ui.sidebar(
         ui.input_select("metrics", "Metrics:", 
                         {"Production Rate": {"rate_hat": "Decline Projection"}, 
-                         "Total Yield": {"cum_hat_fit": "Historical Projection",
-                                         "cum_hat_pred": "Estimated Ultimate Recovery"},},),
+                         "Total Yield": {"cum_hat_pred": "Estimated Ultimate Recovery"},},),
         ui.input_checkbox("quality", "Quality Plot", True),
         ui.input_checkbox("log", "Log Scale", False),
         ui.input_checkbox("sec", "Secondary Axis", True),
@@ -306,9 +305,6 @@ def server(input, output, session):
     if input.metrics() == 'rate_hat':
       metric1='rate'
       metric2='rate_hat'
-    elif input.metrics() == 'cum_hat_fit':
-      metric1='cum'
-      metric2='cum_hat_fit'
     elif input.metrics() == 'cum_hat_pred':
       metric1='cum'
       metric2='cum_hat_pred'
