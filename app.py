@@ -306,6 +306,12 @@ def server(input, output, session):
     if input.metrics() == 'rate_hat':
       metric1='rate'
       metric2='rate_hat'
+    elif input.metrics() == 'cum_hat_fit':
+      metric1='cum'
+      metric2='cum_hat_fit'
+    elif input.metrics() == 'cum_hat_pred':
+      metric1='cum'
+      metric2='cum_hat_pred'
     quality = True if input.quality() else False
     log = True if input.log() else False
     sec = subtitle if input.sec() else ""

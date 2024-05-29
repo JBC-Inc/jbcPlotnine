@@ -1,4 +1,4 @@
-TODO:
+# TODO:
 
 # add styling from creator
 #
@@ -80,11 +80,14 @@ TODO:
 # 
 
 
-===============================================================================
-===============================================================================
-========================== subplots ===========================================
-===============================================================================
-===============================================================================
+#========================================================================================================================
+#========================================================================================================================
+#========================== subplots ====================================================================================
+#========================================================================================================================
+#========================================================================================================================
+
+from plotnine import *
+from plotnine.data import *
 
 plot1 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='red'))
 plot2 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='blue'))
@@ -172,35 +175,35 @@ plot2.save("plot2.png")
 
 # from matplotlib import gridspec
 # 
-# row=2
-# col=1
-# height=None
-# width=None 
-# dpi=500
-# ratio=None
-# pixels=10000
-# figsize=(12, 8)
-# 
-# if ratio is None: 
-#   ratio = 1.5 * col / row
-# 
-# if height is None and width is not None: 
-#   height = ratio * width
-# 
-# if height is not None and width is None: 
-#   width = height / ratio
-# 
-# if height is None and width is None:
-#   area = pixels / dpi
-#   width = np.sqrt(area/ratio)
-#   height = ratio * width
+row=2
+col=1
+height=None
+width=None 
+dpi=500
+ratio=None
+pixels=10000
+figsize=(12, 8)
 
-# plot1 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='red') + labs(x='', y=''))
-# plot2 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='red') + labs(x='', y=''))
-# 
-# p1path = 'plot1.png'
-# p2path = 'plot2.png'
-# 
+if ratio is None: 
+  ratio = 1.5 * col / row
+
+if height is None and width is not None: 
+  height = ratio * width
+
+if height is not None and width is None: 
+  width = height / ratio
+
+if height is None and width is None:
+  area = pixels / dpi
+  width = np.sqrt(area/ratio)
+  height = ratio * width
+
+plot1 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='red') + labs(x='', y=''))
+plot2 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='red') + labs(x='', y=''))
+
+p1path = 'plot1.png'
+p2path = 'plot2.png'
+
 plot1.save(p1path, height=height, width=5, dpi=500)
 plot2.save(p2path, height=height, width=5, dpi=500)
 
@@ -258,6 +261,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import matplotlib.image as img
 import numpy as np
+import pandas as pd
 from plotnine import ggplot, aes, geom_line
 
 # Generate some data
@@ -314,11 +318,11 @@ plt.show()
 
 
 
-===============================================================================
-===============================================================================
-========================== patchworklib =======================================
-===============================================================================
-===============================================================================
+#======================================================================================================
+#======================================================================================================
+#========================== patchworklib ==============================================================
+#======================================================================================================
+#======================================================================================================
 #
 # ONLY PLOTNINE 0.12.4
 # 
@@ -337,38 +341,40 @@ plt.show()
 # axis_ticks_pad_major_x
 # axis_ticks_pad_minor_y
 
-import patchworklib as pw
-import plotnine as plotnine
+# working model <------------------------------------------------------------------------------------ patchworklib
 
-p1 = (ggplot(mtcars) 
-      + geom_point(aes('wt', 'mpg', color='mpg'))
-      + scale_color_gradient(low='red', high='green')
-      + theme(
-          axis_text_x        =element_blank(),
-          axis_ticks_major_x =element_blank(),
-          axis_title_x       =element_blank(),
-          subplots_adjust    ={'left': 0.1, 'right': 0.9, 'top': 0.9, 'bottom': 0.0}
-      )
-      + labs(x='')
-      )
+# import patchworklib as pw
+# import plotnine as plotnine
+
+# p1 = (ggplot(mtcars) 
+#       + geom_point(aes('wt', 'mpg', color='mpg'))
+#       + scale_color_gradient(low='red', high='green')
+#       + theme(
+#           axis_text_x        =element_blank(),
+#           axis_ticks_major_x =element_blank(),
+#           axis_title_x       =element_blank(),
+#           subplots_adjust    ={'left': 0.1, 'right': 0.9, 'top': 0.9, 'bottom': 0.0}
+#       )
+#       + labs(x='')
+#       )
       
-p2 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='blue') 
-      # + theme(
-      #     axis_title       =element_blank(),
-      #     axis_ticks_major =element_blank(),
-      #     axis_ticks_minor =element_blank(),
-      #     plot_margin=(0)
-      # )
-      # + labs(x='', y='', title='')
-      )
+# p2 = (ggplot(mtcars) + geom_point(aes('wt', 'mpg'), color='blue') 
+#       # + theme(
+#       #     axis_title       =element_blank(),
+#       #     axis_ticks_major =element_blank(),
+#       #     axis_ticks_minor =element_blank(),
+#       #     plot_margin=(0)
+#       # )
+#       # + labs(x='', y='', title='')
+#       )
               
-pw1 = pw.load_ggplot(p1, figsize=(10, 5))
-pw2 = pw.load_ggplot(p2, figsize=(10, 1.42))
-pw3 = pw.load_ggplot(p3)
+# pw1 = pw.load_ggplot(p1, figsize=(10, 5))
+# pw2 = pw.load_ggplot(p2, figsize=(10, 1.42))
+# pw3 = pw.load_ggplot(p3)
 
-pw.param["margin"] = 0.1 # 'none'
-fin = (pw1/pw2)
-fin.savefig("finalplot.png", dpi=500)
+# pw.param["margin"] = 0.1 # 'none'
+# fin = (pw1/pw2)
+# fin.savefig("finalplot.png", dpi=500)
 
 
 
@@ -392,10 +398,26 @@ fin.savefig("finalplot.png", dpi=500)
 #
 # 
 
+from datetime import *
+
+ddf = pd.DataFrame({'tick_labels': [0, 275, 640, 1005, 1371, 1736, 2101, 2466, 2832, 3197, 3562],
+                    'tick_locations': 
+                     [datetime(2009, 4, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2010, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2011, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2012, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2013, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2014, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2015, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2016, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2017, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2018, 1, 1, 0, 0, tzinfo=timezone.utc), 
+                      datetime(2019, 1, 1, 0, 0, tzinfo=timezone.utc)]})
+
 ax2 = (  
-  ggplot(df)
+  ggplot(ddf)
   + geom_point(aes(x='tick_locations', y='tick_labels'), color='#00000000')
-  + scale_x_datetime(labels=df['tick_labels'].tolist(), breaks=df['tick_locations'].tolist())
+  + scale_x_datetime(labels=ddf['tick_labels'].tolist(), breaks=ddf['tick_locations'].tolist())
   + theme(
       axis_title_x=element_blank(),
       axis_title_y=element_blank(),
@@ -411,19 +433,7 @@ ax2 = (
   )
 )
 
-ddf = pd.DataFrame({'tick_labels': [0, 275, 640, 1005, 1371, 1736, 2101, 2466, 2832, 3197, 3562],
-                    'tick_locations': 
-                     [datetime(2009, 4, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2010, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2011, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2012, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2013, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2014, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2015, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2016, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2017, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2018, 1, 1, 0, 0, tzinfo=timezone.utc), 
-                      datetime(2019, 1, 1, 0, 0, tzinfo=timezone.utc)]})
+
 
 
   # Draw a secondary axis on top of existing plotnine figure. The function will
@@ -482,22 +492,22 @@ ddf = pd.DataFrame({'tick_labels': [0, 275, 640, 1005, 1371, 1736, 2101, 2466, 2
 
 
 
-p1 = (
-  ggplot(mtcars)
-  + geom_point(aes(x='wt', y='mpg'))
-  + labs(title="AAAAAAAAAAAAAAAAAAAAAAA\n\n",
-         subtitle="bbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-)
+# p1 = (
+#   ggplot(mtcars)
+#   + geom_point(aes(x='wt', y='mpg'))
+#   + labs(title="AAAAAAAAAAAAAAAAAAAAAAA\n\n",
+#          subtitle="bbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+# )
 
-p2 = ax2(ddf)
+# p2 = ax2(ddf)
 
               
-pw1 = pw.load_ggplot(p1)
-pw2 = pw.load_ggplot(p2)
+# pw1 = pw.load_ggplot(p1)
+# pw2 = pw.load_ggplot(p2)
 
-pw.param["margin"]=-0.6
-fin = (pw2/pw1)
-fin.savefig("finalplot.png", dpi=500)
+# pw.param["margin"]=-0.6
+# fin = (pw2/pw1)
+# fin.savefig("finalplot.png", dpi=500)
 
 
 
@@ -517,7 +527,8 @@ with open("./inst/data/subtitle.txt", "r") as file:
 with open("./inst/data/subtitle.txt", "w") as file:
   file.write(subtitle)
 
-subtitle = 'Days:0       275        640       1005        1371       1736        2101       2466       2832       3197       3562'
+subtitle = 'Days:0       275        640       1005        1371       1736        2101       2466       2832       3197        3562'
+
 
 
 
