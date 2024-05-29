@@ -218,7 +218,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         title=t1+t2+t3+"\n", 
         subtitle=sec
     )   
-    + theme_seaborn(
+    + pn.theme_seaborn(
         style='darkgrid', 
         context='notebook', 
         font='MS Gothic', 
@@ -344,7 +344,7 @@ def p9_qual(qual):
         y='Quality', 
         title=''
     )
-    + theme_seaborn(
+    + pn.theme_seaborn(
         style='darkgrid', 
         context='notebook', 
         font='MS Gothic', 
