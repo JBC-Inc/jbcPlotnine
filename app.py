@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from datetime import *
 
 from plotnine import *
@@ -10,8 +11,6 @@ import plotnine as pn
 
 from shiny import *
 import shinyswatch as ss
-
-# python -m pip install
 
 # data ========================================================================
 qual = pd.read_csv(
