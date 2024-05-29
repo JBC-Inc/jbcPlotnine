@@ -75,10 +75,10 @@ in the realm of hydrocarbon exploration and production.
           inception, a pivotal metric in assessing reservoir depletion and
           long-term yield potential.
 
-     Cum Hat/Fit: Forecasts encompassing both fitted and predictive models
-                  for cumulative production, enabling stakeholders to
-                  anticipate future reservoir dynamics and optimize extraction
-                  strategies accordingly.
+     Cum Fit: Forecasts encompassing both fitted and predictive models
+              for cumulative production, enabling stakeholders to
+              anticipate estimated ultimate recovery reservoir dynamics and 
+              optimize extraction strategies accordingly.
 
 ##### Statistical Insights:
 
@@ -120,12 +120,12 @@ the dynamic landscape of natural gas exploration and production.
 
 #### Usage
 
-Plotnine code was written within a virtual python environment utilizing
-the `reticulate` package. The main plotnine code resides within:
-`/R/plotnine.py`
+The plot was originally intended to be a stand alone python file but
+many technical hurdles prevented this so I decided to integrate the
+plot(s) into an interactive Shiny for Python web app hosted on
+[shinyapps.io](https://shinyapps.io). My first Python for Shiny app!
 
-There are helper functions that assist in plotnine generation, so this
-script should be run beforehand. to load the environment. The actual
-plotnine plots are located in `/R/plots.py`.
+To view the completed plot visit this link: [2024 PLOTNINE
+CONTEST](https://kraggle.shinyapps.io/jcplotnine/)
 
 Enjoy!
