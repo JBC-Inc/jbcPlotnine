@@ -18,11 +18,10 @@ from plotnine.facets import *
 from plotnine.themes import *
 import plotnine as pn
 
-# import plotnine as pn          # 0.12.4
-import patchworklib as pw      # 0.6.4        plotnine 0.13.6 revert to 0.12.4
+from shiny import ui
 
-import subprocess
-print(subprocess.run(['pip', 'list'], capture_output=True, text=True).stdout)
+# import subprocess
+# print(subprocess.run(['pip', 'list'], capture_output=True, text=True).stdout)
 
 # import warnings
 # warnings.filterwarnings("ignore")
@@ -228,42 +227,42 @@ def p9_main(qual, metric1, metric2, quality=True, log=False):
 
 # secondary axis
 def secondary():
-  # plt.plot([], [])
-  # 
-  # #look and feel of 2nd axis 
-  # # plt.rcParams.update({'font.size': 10, 'font.weight': 'normal', 'font.family': 'Fira Code'})
-  # 
-  # # new axis 
-  # ax = plt.gca()
-  # 
-  # # overlay secondary axis on plotnine plot, match limits of ggplot
-  # sec = ax.twiny()
-  # sec.set_xlim(ax.get_xlim());
-  # sec.set_ylim(ax.get_ylim());
-  # 
-  # # Historic/Forecast start
-  # tick_locations = [fcst_hs]
-  # tick_labels = [0]  # Days since reference for start_date
-  # 
-  # # Add tick locations for January 1st of subsequent years
-  # for year in range(2010, 2020):
-  #   january_1st = datetime(year, 1, 1, tzinfo=timezone.utc)
-  #   tick_locations.append(january_1st)
-  #   tick_labels.append((january_1st - fcst_hs).days)
-  #   
-  # # Set ticks and labels
-  # sec.set_xticks(ticks=tick_locations, labels=tick_labels)
-  # 
-  # # Hide secondary spines
-  # sec.spines['top'].set_visible(False)
-  # sec.spines['right'].set_visible(False)
-  # sec.spines['bottom'].set_visible(False)
-  # sec.spines['left'].set_visible(False)
-  # 
-  # # Hide ax minor ticks
-  # ax.tick_params(axis='x', which='both', color='white')
-  # 
-  # plt.show()
+   plt.plot([], [])
+   
+   # look and feel of 2nd axis 
+   # plt.rcParams.update({'font.size': 10, 'font.weight': 'normal', 'font.family': 'Fira Code'})
+   
+   # new axis 
+   ax = plt.gca()
+   
+   # overlay secondary axis on plotnine plot, match limits of ggplot
+   sec = ax.twiny()
+   sec.set_xlim(ax.get_xlim())
+   sec.set_ylim(ax.get_ylim())
+   
+   # Historic/Forecast start
+   tick_locations = [fcst_hs]
+   tick_labels = [0]  # Days since reference for start_date
+   
+   # Add tick locations for January 1st of subsequent years
+   for year in range(2010, 2020):
+     january_1st = datetime(year, 1, 1, tzinfo=timezone.utc)
+     tick_locations.append(january_1st)
+     tick_labels.append((january_1st - fcst_hs).days)
+   
+   # Set ticks and labels
+   sec.set_xticks(ticks=tick_locations, labels=tick_labels)
+   
+   # Hide secondary spines
+   sec.spines['top'].set_visible(False)
+   sec.spines['right'].set_visible(False)
+   sec.spines['bottom'].set_visible(False)
+   sec.spines['left'].set_visible(False)
+
+   # Hide ax minor ticks
+   ax.tick_params(axis='x', which='both', color='white')
+   
+   plt.show()
   
 # ax2
 def ax2(ddf):
@@ -342,45 +341,38 @@ def p9_qual(qual):
   return p
 
 # Final plot
-def plot_nine(qual, metric1, metric2, quality, log):
-  """
-  Use patchworklib library to either save 1 or 2 plots. The plot that will 
-  always be active is the main plot. The quality plot is optional. 
+# def plot_nine(qual, metric1, metric2, quality, log):
+#   """
+#   Use patchworklib library to either save 1 or 2 plots. The plot that will 
+#   always be active is the main plot. The quality plot is optional. 
   
-  There is currently no way to implement a secondary x axis while rendering 
-  multiple plots. This would be possible in ggplot2 with cowplot and 
-  scale_x_datetime(sec.axis)
+#   There is currently no way to implement a secondary x axis while rendering 
+#   multiple plots. This would be possible in ggplot2 with cowplot and 
+#   scale_x_datetime(sec.axis)
 
-  Parameters are inherited from p9_main().
+#   Parameters are inherited from p9_main().
   
-  Returns:
-    Side effect is to output the final plot: "plotnine.png" into the working
-    directory.
-  """
-  main = p9_main(qual, metric1, metric2, quality, log) 
-  pw1 = pw.load_ggplot(main, figsize=(10, 5))
+#   Returns:
+#     Side effect is to output the final plot: "plotnine.png" into the working
+#     directory.
+#   """
+#   main = p9_main(qual, metric1, metric2, quality, log) 
+#   pw1 = pw.load_ggplot(main, figsize=(10, 5))
   
-  qual = p9_qual(qual)
-  pw2 = pw.load_ggplot(qual, figsize=(10, 1))
+#   qual = p9_qual(qual)
+#   pw2 = pw.load_ggplot(qual, figsize=(10, 1))
   
-  if quality == True:
-    pw.param["margin"]=0.1
-    fin = (pw1/pw2)
-    fin.savefig("plotnine.png", dpi=500)
-  else: 
-    fin = (pw1)
-    fin.savefig("plotnine.png", dpi=500)
+#   if quality == True:
+#     pw.param["margin"]=0.1
+#     fin = (pw1/pw2)
+#     fin.savefig("plotnine.png", dpi=500)
+#   else: 
+#     fin = (pw1)
+#     fin.savefig("plotnine.png", dpi=500)
 
-
-
-
-
-
-
-
-==============================================================================
-=========================== plotnine plots ===================================
-==============================================================================
+#==============================================================================
+#=========================== plotnine plots ===================================
+#==============================================================================
 
 # default plotnine
 theme_set(theme_gray())
@@ -394,20 +386,21 @@ theme_set(theme_seaborn   (style='darkgrid', context='notebook', font='Fira Code
 
 # Historical rate time decline curve with forecasted production of a gas well.
 
-theme_set(theme_seaborn   (style='darkgrid', context='notebook', font='MS Gothic', font_scale=1))
+# theme_set(theme_seaborn   (style='darkgrid', context='notebook', font='MS Gothic', font_scale=1))
 
-plot_nine(qual, 'rate', 'rate_hat', quality=True, log=False)
-plot_nine(qual, 'rate', 'rate_hat', quality=True, log=True)
-plot_nine(qual, 'rate', 'rate_hat', quality=False, log=False)
-plot_nine(qual, 'rate', 'rate_hat', quality=False, log=True)
+# plot_nine(qual, 'rate', 'rate_hat', quality=True, log=False)
+# plot_nine(qual, 'rate', 'rate_hat', quality=True, log=True)
+# plot_nine(qual, 'rate', 'rate_hat', quality=False, log=False)
+# plot_nine(qual, 'rate', 'rate_hat', quality=False, log=True)
 
-# Cumulative estimate production
-plot_nine(qual, 'cum', 'cum_hat_fit', quality=True, log=False)
-plot_nine(qual, 'cum', 'cum_hat_fit', quality=True, log=True)
+# # Cumulative estimate production
+# plot_nine(qual, 'cum', 'cum_hat_fit', quality=True, log=False)
+# plot_nine(qual, 'cum', 'cum_hat_fit', quality=True, log=True)
 
-# Cumulative predicted production
-plot_nine(qual, 'cum', 'cum_hat_pred', quality=True, log=False)
-plot_nine(qual, 'cum', 'cum_hat_pred', quality=True, log=True)
+# # Cumulative predicted production
+# plot_nine(qual, 'cum', 'cum_hat_pred', quality=True, log=False)
+# plot_nine(qual, 'cum', 'cum_hat_pred', quality=True, log=True)
+
 
 
 

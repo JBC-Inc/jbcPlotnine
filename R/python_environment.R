@@ -21,6 +21,7 @@ library(reticulate)
 # reticulate::virtualenv_install(envname = "python-env", packages = c("shiny"))
 # reticulate::virtualenv_install(envname = "python-env", packages = c("shinyswatch"))
 # reticulate::virtualenv_install(envname = "python-env", packages = c("shinywidgets"))
+# reticulate::virtualenv_install(envname = "python-env", packages = c("plotnine"))
 
 # lookat information about the version of Python currently being used by reticulate.
 # reticulate::py_config()
@@ -83,13 +84,25 @@ reticulate::repl_python()
 # writeLines(subtitle, "./inst/data/subtitle.txt")
 
 
-
-
-
-
-
-
-
+#
+# library(tidyverse)
+#
+# df <- data.frame(a = runif(1000, min=900, max=1000), b = runif(1000, min=1, max=10))
+#
+# p1 <- ggplot(df, aes(a, a))+
+#   geom_point()+
+#   scale_y_log10()+
+#   theme(axis.text.y.left=element_text(margin=unit(c(0, 6, 0, 0), 'mm')))
+#
+#
+# p2 <- ggplot(df, aes(b, b))+
+#   geom_point()+
+#   scale_y_continuous(breaks=seq(1, 15, 1))+
+#   theme(axis.text.y.left=element_text(margin=unit(c(0, 5, 0, 5), 'mm')))
+#
+# p1
+# p2
+#
 
 
 
