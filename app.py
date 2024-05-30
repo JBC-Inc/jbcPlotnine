@@ -1,19 +1,17 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib import font_manager
 
 from datetime import *
 
 from plotnine import *
-from plotnine.data import *
 from plotnine.themes import *
-import plotnine as pn
 
 from shiny import *
 import shinyswatch as ss
 
 # data ========================================================================
+#
+# Data set with historic production, forecast models and quality metrics
 qual = pd.read_csv(
   filepath_or_buffer='./inst/data/qual.csv',
   keep_default_na=False,
@@ -23,28 +21,26 @@ qual = pd.read_csv(
          'Historic': 'string',
          'Forecast': 'string'}
 )
-                          
+
+# DataFrame containing the regions which are to be colored.                  
 fr = pd.read_csv(
   filepath_or_buffer='./inst/data/fill_region.csv',
   parse_dates=['start', 'end'],
   dtype={'region': 'category',
   'color': 'category'}
 )
-                        
-ddf = pd.read_csv(
-  filepath_or_buffer='./inst/data/ddf.csv'
-)
 
+# Experimental secondary axis text.
 with open(file="./inst/data/subtitle.txt", mode="r") as file:
   subtitle = file.read().rstrip()
 
-# Historic Start April 1, 2009
+# Production Historic Start Date April 1, 2009
 hs = datetime(2009, 4, 1, tzinfo=timezone.utc)
 
-# Forecast Start Janurary 1, 2011
+# Forecast Model Start Date Janurary 1, 2011
 fs = datetime(2011, 1, 1, tzinfo=timezone.utc)
 
-# Historic End    June 1, 2019
+# Historic Production/Forecast End Date June 1, 2019
 he = datetime(2019, 6, 1, tzinfo=timezone.utc)
 
 # functions ===================================================================
@@ -127,7 +123,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
     
   Returns
   -------
-    plotnine.ggplot.ggplot object
+    plotnine.ggplot.ggplot
   """
   plt.close('all')
     
@@ -142,7 +138,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
 
   p = (
     ggplot(qual)
-    # Historic ----------------------------------------------------------------
+    # Historic Production -----------------------------------------------------
     + geom_point(
         mapping=aes(
                     x='date', 
@@ -159,7 +155,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         values=['o']
     )
 
-    # Forecast ----------------------------------------------------------------
+    # Forecast Model ----------------------------------------------------------
     + geom_line(
         mapping=aes(
                     x='date', 
@@ -221,7 +217,6 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
     + theme_seaborn(
         style='darkgrid', 
         context='notebook', 
-        font='Consolas', 
         font_scale=1
     )    
     + theme(
@@ -234,7 +229,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         panel_background=element_rect(fill='#01010111'),
         panel_grid_major_y=element_line(size=0.77, color='white'),
         panel_grid_minor_y=element_line(size=0.42, color='white'),
-        plot_subtitle=element_text(size=11),                         # default rate_hat
+        plot_subtitle=element_text(size=9)
     )
   )
   # Log Scale -----------------------------------------------------------------
@@ -244,7 +239,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
               limits=log_limits,
               labels=label_comma
             ) + theme(
-                  axis_text_y=element_text(margin={'r': 0.0, 'units': 'in'})
+                  axis_text_y=element_text(margin={'r': 0.06, 'units': 'in'})
               )
   else:
     p = p + scale_y_continuous(labels=label_comma)
@@ -263,15 +258,15 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
 
 def p9_qual(qual):
   """
-  Plot forecast quality metrics
+  Plot forecast quality metrics.
   
   This plot will be optional and allows the user to view the quality of the 
-  forecasts/predictions made over time.
+  forecasts made over time.
   
   Parameters
   ----------
   qual : pd.DataFrame
-         The main dataframe with quality data.
+         Dataframe containing quality data.
 
   Returns
   -------
@@ -347,7 +342,6 @@ def p9_qual(qual):
     + theme_seaborn(
         style='darkgrid', 
         context='notebook', 
-        font='Consolas', 
         font_scale=1
     )
     + theme(
@@ -355,7 +349,7 @@ def p9_qual(qual):
         axis_ticks_minor_x=element_blank(),
         figure_size=(19.2, 10.8),
         legend_frame=element_rect(fill='#ffffff', size=77),
-        legend_box_spacing=0.05,
+        legend_box_spacing=0.045,
         panel_background=element_rect(fill='#01010111'),
         panel_grid_major_y=element_line(size=0.77, color='white'),
         panel_grid_minor_y=element_line(size=0.42, color='white'),
@@ -364,7 +358,7 @@ def p9_qual(qual):
   )
   return q  
 
-# app =========================================================================
+# Shiny Python ================================================================
 
 app_ui = ui.page_navbar(
   ui.nav_panel(
@@ -380,7 +374,7 @@ app_ui = ui.page_navbar(
                          "Total Yield": {"cum_hat_pred": "EUR"},},),
         ui.input_checkbox("quality", "Quality Plot", True),
         ui.input_checkbox("log", "Log Scale", False),
-        ui.input_checkbox("sec", "Secondary Axis", True),
+        ui.input_checkbox("sec", "Sec.Axis(experimental)", False),
       ),
       ui.output_plot("plotnine", width="80%"), # , height='500px'),
       ui.output_plot("quality_plot", width="80%", height='142px'),
@@ -400,25 +394,26 @@ def server(input, output, session):
     elif input.metrics() == 'cum_hat_pred':
       metric1='cum'
       metric2='cum_hat_pred'
-    quality = input.quality()
-    log = input.log()
     sec = subtitle if input.sec() else ""
-    p = p9_main(qual, metric1, metric2, quality, log, sec)
-    return p
+    return p9_main(qual, metric1, metric2, input.quality(), input.log(), sec)
   
   @output
   @render.plot()
   def quality_plot():
     if input.quality() == True:
+      q = p9_qual(qual)
       if input.metrics() == 'cum_hat_pred':
-        q = p9_qual(qual)
         q = q + theme(
-                  axis_text_y=element_text(margin={'r': 0.35, 'units': 'in'})
+                  axis_text_y=element_text(margin={'r': 0.32, 'units': 'in'})
                 )
-      else:
-        q = p9_qual(qual)
     else:
       q = (ggplot() + theme_void())
     return q
 
-app = App(app_ui, server)
+app = App(app_ui, server) 
+
+
+
+
+
+

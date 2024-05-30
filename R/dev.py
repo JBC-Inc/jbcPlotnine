@@ -499,6 +499,4 @@ with open("./inst/data/subtitle.txt", "r") as file:
 with open("./inst/data/subtitle.txt", "w") as file:
   file.write(subtitle)
 
-subtitle = 'Days:0       275        640       1005        1371       1736       2101       2466       2832       3197       3562'
-
-
+subtitle = 'Days:  0            275             640               1005               1371               1736               2101               2466               2832               3197                 3562'
