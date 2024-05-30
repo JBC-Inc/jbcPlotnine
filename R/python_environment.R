@@ -36,11 +36,10 @@ reticulate::use_virtualenv(
 # Objects created within Python are available for R session (and vice-versa).
 reticulate::repl_python()
 
-#
 
 
 
-# qual ----------------------------------------------------
+# qual ------------------------------------------------------------------------
 # qual <- readr::read_csv("./inst/data/qual.csv")
 # library(tidyverse)
 # glimpse(qual)
@@ -50,21 +49,19 @@ reticulate::repl_python()
 # qual <- qual |> select(-c(Historic, Forecast))
 # readr::write_csv(qual, "./inst/data/qual.csv")
 
-# format region -------------------------------------------
+# format region ---------------------------------------------------------------
 # fr = pd.read_csv('./inst/data/rf.csv',
 #                  parse_dates=['start', 'end'],
 #                  dtype={'region': 'category'})
 # fr['color'] = pd.Categorical([1, 2, 3, 4])
 # fr <- readr::read_csv('./inst/data/rf.csv')
-# fr
-#
 # fr <- fr |> dplyr::mutate(color = as.factor(c(1, 2, 3, 4)))
 # fr <- fr |> dplyr::mutate(region = as.factor(region))
 # fr <- fr |> dplyr::select(-color)
 # fr
 # readr::write_csv(fr, "./inst/data/fill_region.csv")
 #
-
+# dummy data frame ------------------------------------------------------------
 # ddf <- data.frame(tick_labels = c(0, 275, 640, 1005, 1371, 1736, 2101, 2466, 2832, 3197, 3562),
 #                   tick_locations = c(as.POSIXct("2009-04-01 00:00:00"),
 #                                      as.POSIXct("2010-01-01 00:00:00"),
@@ -80,27 +77,5 @@ reticulate::repl_python()
 #
 # readr::write_csv(ddf, "./inst/data/ddf.csv")
 
-# subtitle <- "\u2003\u2003\u20030\u2003\u2003\u2003275\u2003\u2003\u2003\u2003640\u2003\u2003\u2003\u20031005\u2003\u2003\u2003\u20031371\u2003\u2003\u2003\u20031736\u2003\u2003\u2003\u20032101\u2003\u2003\u20032466\u2003\u2003\u2003\u20032832\u2003\u2003\u2003\u20033197\u2003\u2003\u20033562"
-# writeLines(subtitle, "./inst/data/subtitle.txt")
-
-
-#
-# library(tidyverse)
-#
-# df <- data.frame(a = runif(1000, min=900, max=1000), b = runif(1000, min=1, max=10))
-#
-# p1 <- ggplot(df, aes(a, a))+
-#   geom_point()+
-#   scale_y_log10()+
-#   theme(axis.text.y.left=element_text(margin=unit(c(0, 6, 0, 0), 'mm')))
-#
-#
-# p2 <- ggplot(df, aes(b, b))+
-#   geom_point()+
-#   scale_y_continuous(breaks=seq(1, 15, 1))+
-#   theme(axis.text.y.left=element_text(margin=unit(c(0, 5, 0, 5), 'mm')))
-#
-# p1
-# p2
 
 

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
 
 from datetime import *
 
@@ -217,23 +218,23 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         title=t1+t2+t3+"\n", 
         subtitle=sec
     )   
-    + pn.theme_seaborn(
+    + theme_seaborn(
         style='darkgrid', 
         context='notebook', 
-        font='MS Gothic', 
+        font='Consolas', 
         font_scale=1
     )    
     + theme(
-        axis_text_y=element_text(margin={'r': 0.125, 'units': 'in'}),
+        axis_text_y=element_text(margin={'r': 0.15, 'units': 'in'}), # default rate_hat
         axis_ticks_minor_x=element_blank(),
         figure_size=(19.2, 10.8),
         legend_justification_right="top",        
         legend_key=element_rect(fill='#ffffff00'),
-        # legend_position=(0.95, 0.95),
         legend_text=element_text(margin={'l': 7, 'units': 'pt'}),
         panel_background=element_rect(fill='#01010111'),
         panel_grid_major_y=element_line(size=0.77, color='white'),
-        panel_grid_minor_y=element_line(size=0.42, color='white')    
+        panel_grid_minor_y=element_line(size=0.42, color='white'),
+        plot_subtitle=element_text(size=11),                         # default rate_hat
     )
   )
   # Log Scale -----------------------------------------------------------------
@@ -286,7 +287,7 @@ def p9_qual(qual):
             y='quality', 
             color='..y..'), 
         size=1, 
-        show_legend=False
+        show_legend=True
     )   
     + scale_color_gradient(
         high='green', 
@@ -343,16 +344,18 @@ def p9_qual(qual):
         y='Quality', 
         title=''
     )
-    + pn.theme_seaborn(
+    + theme_seaborn(
         style='darkgrid', 
         context='notebook', 
-        font='MS Gothic', 
+        font='Consolas', 
         font_scale=1
     )
     + theme(
-        axis_text_y=element_text(margin={'r': 0.1, 'units': 'in'}),
+        axis_text_y=element_text(margin={'r': 0.08, 'units': 'in'}), # default
         axis_ticks_minor_x=element_blank(),
         figure_size=(19.2, 10.8),
+        legend_frame=element_rect(fill='#ffffff', size=77),
+        legend_box_spacing=0.05,
         panel_background=element_rect(fill='#01010111'),
         panel_grid_major_y=element_line(size=0.77, color='white'),
         panel_grid_minor_y=element_line(size=0.42, color='white'),
@@ -366,20 +369,21 @@ def p9_qual(qual):
 app_ui = ui.page_navbar(
   ui.nav_panel(
     "Gas Forecast",
+    ui.tags.style(".collapse-toggle { display: none !important; }"),
     ui.tags.style(".shiny-input-container .checkbox input { border: 2px solid black; }"),
     ui.tags.style(".shiny-input-select { border: 2px solid black; }"),
     ss.theme.lux, 
     ui.layout_sidebar(
       ui.sidebar(
         ui.input_select("metrics", "Metrics:", 
-                        {"Production Rate": {"rate_hat": "Decline Projection"}, 
-                         "Total Yield": {"cum_hat_pred": "Estimated Ultimate Recovery"},},),
+                        {"Production Rate": {"rate_hat": "Curve Projection"}, 
+                         "Total Yield": {"cum_hat_pred": "EUR"},},),
         ui.input_checkbox("quality", "Quality Plot", True),
         ui.input_checkbox("log", "Log Scale", False),
         ui.input_checkbox("sec", "Secondary Axis", True),
       ),
-      ui.output_plot("plotnine", width="80%", height='500px'),
-      ui.output_plot("quality_plot", width="71%", height='142px'),
+      ui.output_plot("plotnine", width="80%"), # , height='500px'),
+      ui.output_plot("quality_plot", width="80%", height='142px'),
     ),
   ),
   title="2024 Plotnine Contest\u2003\u2003\u2003\u2003"

@@ -47,13 +47,16 @@ devtools::install_github("JBC-Inc/jbcPlotnine")
 
 #### DATA:
     
-  This comprehensive data set encapsulates a detailed analysis of historical
-  and forecasted data for a natural gas well, meticulously curated and
-  organized for strategic decision making in the energy sector.
+  This data set encapsulates a detailed analysis of historical and forecasted 
+  data for a natural gas well, organized for strategic decision making in the 
+  energy sector.
 
-  Each entry in this pandas.DataFrame, comprising 123 observations, is a
-  testament to the meticulous monitoring and predictive modeling employed in
-  the realm of hydrocarbon exploration and production.
+  Each entry in the pandas.DataFrame, with 123 observations, demonstrates
+  predictive modeling used in hydrocarbon exploration and production. The 
+  original forecasts for decline and recovery were generated about 2 years
+  after production had began. The results shown are the actual production
+  8 years later, and how well the original forecasts held up over time, 
+  observable within the quality plot.
 
     Region: The designation of data points within the plot, categorized as
             either FIT or PREDICT, offering clarity regarding the origin of
@@ -66,8 +69,8 @@ devtools::install_github("JBC-Inc/jbcPlotnine")
 ##### Production Metrics:
 
      Rate: instantaneous rate of natural gas production, measured in standard
-           units, indicative of the well's productivity at one month time
-           intervals.
+           units CCF (hundred cubic feet) indicative of the well's productivity 
+           at one month time intervals.
 
      Rate_Hat: A prognostic indicator denoting the projected production rate
                derived from forecasting methodologies.
@@ -92,9 +95,9 @@ devtools::install_github("JBC-Inc/jbcPlotnine")
                           facilitating rigorous performance evaluation and
                           model refinement.
 
-      Quality Metrics: An aggregate assesment of data quality and modeling
-                       efficacy, paramount in ensuring the reliability and
-                       robustness of analytical insights.
+      Quality Metric: An aggregate assesment of data quality and modeling
+                      efficacy, paramount in ensuring the reliability and
+                      robustness of analytical insights.
 
       Drift Analysis: Examination of production drift, elucidating underlying
                       reservoir behavior and guiding reservoir management
@@ -111,16 +114,16 @@ devtools::install_github("JBC-Inc/jbcPlotnine")
                 into future production dynamics and resource depletion
                 trajectories.
 
-  This meticulously curated DataFrame amalgamates historical precedence with
-  forward-looking forecasts, empowering stakeholders with actionable insights
-  for strategic decision-making and operational optimization in the dynamic
-  landscape of natural gas exploration and production.
-  
+  This DataFrame combines past data with future predictions. It gives useful 
+  information to help make smart decisions, empowering stakeholders with 
+  actionable insights for strategic decision-making and operations in natural 
+  gas exploration and production.
+
 ---
 
 #### Usage
 
-  The plot was originally intended to be a stand alone python file but many technical hurdles prevented this so I decided to integrate the plot(s) into an interactive Shiny for Python web app hosted on [shinyapps.io](https://shinyapps.io). My first Python for Shiny app!
+  The plot was originally intended to be a stand alone python file but many technical hurdles (mostly because plotnine is missing functionality or supporting libraries present in ggplot2) prevented this so I decided to integrate the plot(s) into an interactive Shiny for Python web app hosted on [shinyapps.io](https://shinyapps.io). My first Python for Shiny app!
 
  To view the completed plot visit this link: [2024 PLOTNINE CONTEST](https://kraggle.shinyapps.io/jcplotnine/)
  
