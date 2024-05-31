@@ -6,11 +6,11 @@ from datetime import *
 from plotnine import *
 from plotnine.themes import *
 
-from shiny import *
+from shiny import App, render, ui
 import shinyswatch as ss
 
 # data ========================================================================
-#
+
 # Data set with historic production, forecast models and quality metrics
 qual = pd.read_csv(
   filepath_or_buffer='./inst/data/qual.csv',
@@ -44,6 +44,24 @@ fs = datetime(2011, 1, 1, tzinfo=timezone.utc)
 he = datetime(2019, 6, 1, tzinfo=timezone.utc)
 
 # functions ===================================================================
+
+def label_comma(x, digits=0):
+  """
+  Format numeric values with commas as thousands separators.
+  
+  Parameters
+  ----------
+  x : array-like 
+      Numeric values to be formatted. 
+  
+  digits : int 
+           Number of decimal places to display.
+    
+  Returns
+  -------
+    List of formatted strings.
+  """
+  return [f"{value:,.{digits}f}" for value in np.asarray(x)]
 
 def log_breaks(x):
   """
@@ -81,30 +99,7 @@ def log_limits(x):
   breaks = log_breaks(x)
   return [np.min(breaks), np.max(breaks)]
 
-def label_comma(x, digits=0):
-  """
-  Format numeric values with commas as thousands separators.
-  
-  Parameters
-  ----------
-  x : array-like 
-      Numeric values to be formatted. 
-  
-  digits : int 
-           Number of decimal places to display.
-    
-  Returns
-  -------
-    List of formatted strings.
-  """
-  return [f"{value:,.{digits}f}" for value in np.asarray(x)]
-
-def p9_main(qual, 
-            metric1, 
-            metric2, 
-            quality=True, 
-            log=False, 
-            sec=subtitle):
+def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
   """
   Create plotnine main plot.
   
@@ -242,9 +237,10 @@ def p9_main(qual,
               breaks=log_breaks,
               limits=log_limits,
               labels=label_comma
-            ) + theme(
-                  axis_text_y=element_text(margin={'r': 0.06, 'units': 'in'})
-              )
+            ) 
+    p = p + theme(
+              axis_text_y=element_text(margin={'r': 0.06, 'units': 'in'})
+            )
     
   else:
     p = p + scale_y_continuous(labels=label_comma)
@@ -363,7 +359,7 @@ def p9_qual(qual):
   )
   return q  
 
-# Shiny Python ================================================================
+# Shiny for Python ============================================================
 
 app_ui = ui.page_navbar(
   ui.nav_panel(
@@ -371,17 +367,17 @@ app_ui = ui.page_navbar(
     ui.tags.style(".collapse-toggle { display: none !important; }"),
     ui.tags.style(".shiny-input-container .checkbox input { border: 2px solid black; }"),
     ui.tags.style(".shiny-input-select { border: 2px solid black; }"),
-    ss.theme.lux, 
+    ss.theme.lux,
     ui.layout_sidebar(
       ui.sidebar(
-        ui.input_select("metrics", "Metrics:", 
-                        {"Production Rate": {"rate_hat": "Curve Projection"}, 
+        ui.input_select("metrics", "Metrics:",
+                        {"Production Rate": {"rate_hat": "Curve Projection"},
                          "Total Yield": {"cum_hat_pred": "EUR"},},),
         ui.input_checkbox("quality", "Quality Plot", True),
         ui.input_checkbox("log", "Log Scale", False),
         ui.input_checkbox("sec", "Sec.Axis(experimental)", False),
       ),
-      ui.output_plot("plotnine", width="80%"), # , height='500px'),
+      ui.output_plot("plotnine", width="80%"), #, height='500px'),
       ui.output_plot("quality_plot", width="80%", height='142px'),
     ),
   ),
@@ -396,10 +392,13 @@ def server(input, output, session):
     if input.metrics() == 'rate_hat':
       metric1='rate'
       metric2='rate_hat'
+      
     elif input.metrics() == 'cum_hat_pred':
       metric1='cum'
       metric2='cum_hat_pred'
+      
     sec = subtitle if input.sec() else ""
+    
     return p9_main(qual, metric1, metric2, input.quality(), input.log(), sec)
   
   @output
@@ -407,6 +406,7 @@ def server(input, output, session):
   def quality_plot():
     if input.quality() == True:
       q = p9_qual(qual)
+      
       if input.metrics() == 'cum_hat_pred':
         q = q + theme(
                   axis_text_y=element_text(margin={'r': 0.32, 'units': 'in'})
