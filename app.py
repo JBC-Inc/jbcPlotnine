@@ -99,7 +99,12 @@ def label_comma(x, digits=0):
   """
   return [f"{value:,.{digits}f}" for value in np.asarray(x)]
 
-def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
+def p9_main(qual, 
+            metric1, 
+            metric2, 
+            quality=True, 
+            log=False, 
+            sec=subtitle):
   """
   Create plotnine main plot.
   
@@ -125,8 +130,6 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
   -------
     plotnine.ggplot.ggplot
   """
-  plt.close('all')
-    
   if metric1 == "rate":
     ylab = "Flow Rate CCF"
   elif metric1 == "cum":
@@ -177,6 +180,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         linetype='dashed', 
         alpha=0.5
     )
+
     # Forecast Start
     + geom_vline(
         xintercept=fs,
@@ -220,7 +224,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
         font_scale=1
     )    
     + theme(
-        axis_text_y=element_text(margin={'r': 0.15, 'units': 'in'}), # default rate_hat
+        axis_text_y=element_text(margin={'r': 0.15, 'units': 'in'}), # default
         axis_ticks_minor_x=element_blank(),
         figure_size=(19.2, 10.8),
         legend_justification_right="top",        
@@ -241,6 +245,7 @@ def p9_main(qual, metric1, metric2, quality=True, log=False, sec=subtitle):
             ) + theme(
                   axis_text_y=element_text(margin={'r': 0.06, 'units': 'in'})
               )
+    
   else:
     p = p + scale_y_continuous(labels=label_comma)
 
@@ -406,14 +411,9 @@ def server(input, output, session):
         q = q + theme(
                   axis_text_y=element_text(margin={'r': 0.32, 'units': 'in'})
                 )
+        
     else:
       q = (ggplot() + theme_void())
     return q
 
 app = App(app_ui, server) 
-
-
-
-
-
-
