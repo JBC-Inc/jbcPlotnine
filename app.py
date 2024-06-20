@@ -364,7 +364,7 @@ def p9_qual(qual):
 app_ui = ui.page_navbar(
   ui.nav_panel(
     "Gas Forecast",
-    ui.tags.style(".collapse-toggle { display: none !important; }"),
+    # ui.tags.style(".collapse-toggle { display: none !important; }"),
     ui.tags.style(".shiny-input-container .checkbox input { border: 2px solid black; }"),
     ui.tags.style(".shiny-input-select { border: 2px solid black; }"),
     ss.theme.lux,
